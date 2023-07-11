@@ -1,0 +1,36 @@
+#heading {
+    color: white;
+}
+
+.hide-button {
+    display: none
+}
+
+/* Shadow kolem rámečku */
+#form-ramecek {
+    box-shadow: 5px 5px 10px lightgray;
+}
+
+/* ====== Progress Bar ====== */
+.progress {
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    left: 0px;
+}
+
+.progress-bar {
+    transition: none !important;
+  }
+/* === Progress Bar Konec === */
+
+
+footer {
+    height: 100px;
+
+    color: gray;
+    background-color: #212529;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
