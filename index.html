@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Permissions-Policy" content="interest-cohort=()">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
     <!-- Bootstrap CSS -->
@@ -52,6 +51,61 @@
 
     <!--!! Main -->
     <main>
+        <!-- Formulář -->
+        <div class="container p-3 mt-5 d-flex flex-column align-items-lg-center">
+            <div id="formAlert"></div>
+            <form class="col-md-6 mb-3 justify-content-center d-flex flex-column rounded pt-5 pb-3" id="form-ramecek" novalidate">
+                <h3 class="pb-5 justify-content-center d-flex" id="new-user-heading">Nový Pojištěnec</h3>
+
+                    <div class="row justify-content-center">
+                            <div class="col-md-8 mb-2">
+                                <label for="firstName" class="form-label">Jméno</label>
+                                <input type="text" class="form-control" id="firstName" placeholder="Pepa">
+                                <div class="invalid-feedback" id="invalid-jmeno">
+                                    Zadejte prosím své jméno
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                            <div class="col-md-8 mb-2">
+                                <label for="lastName" class="form-label">Přijmení</label>
+                                <input type="text" class="form-control" id="lastName" placeholder="Novák">
+                                <div class="invalid-feedback" id="invalid-prijmeni">
+                                    Zadejte prosím své přijmení
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                            <div class="form-group col-md-8 mb-2">
+                                <label for="age" class="form-label">Věk</label>
+                                <input type="number" class="form-control" id="age" placeholder="35">
+                                <div class="invalid-feedback" id="invalid-age">
+                                    Zadejte prosím svůj věk
+                                </div>
+                            </div>
+                    </div>
+
+                    <div class="row justify-content-center">
+                            <div class="form-group col-md-8 mb-2">
+                                <label for="phoneNumber" class="form-label">Telefon</label>
+                                <input type="tel" class="form-control" id="phoneNumber" placeholder="111222333" aria-labelledby="phoneNumberHelpInLine">
+                                <div id="phoneNumberHelpInLine" class="form-text">
+                                    9 místné číslo bez mezer
+                                </div>
+                                <div class="invalid-feedback" id="invalid-phoneNumber">
+                                    Zadejte prosím své telefoní číslo
+                                </div>
+                            </div>
+                    </div>
+                        
+                        <div class="col-12 d-flex justify-content-center mt-5">
+                            <button id="odeslatBtn" class="btn btn-primary btn-lg px-5" type="submit">Uložit</button>
+                    </div>
+                </form>
+        </div>
+    
         <!-- Tabulka pojištěnců -->
         <div class="container p-3 mt-5">
             <h2 class="mb-4" id="main-body-heading">Pojištěnci</h2>
@@ -77,72 +131,7 @@
                     </tr> -->
                 </tbody>
             </table>
-            <!-- Button -->
-            <!-- <div class="col-12 d-flex justify-content-center">
-                <button id="editBtn" class="btn btn-primary px-4 d-none">Edit</button>
-            </div> -->
         </div>
-
-
-        <!-- Formulář -->
-            <div class="container p-3 mt-5 d-flex flex-column align-items-lg-center">
-                <div id="formAlert"></div>
-                <form class="col-md-6 mb-3 justify-content-center d-flex flex-column rounded pt-5 pb-3" id="form-ramecek" novalidate">
-                    <h3 class="pb-5 justify-content-center d-flex" id="new-user-heading">Nový Pojištěnec</h3>
-
-                        <div class="row justify-content-center">
-                                <div class="col-md-8 mb-2">
-                                    <label for="firstName" class="form-label">Jméno</label>
-                                    <input type="text" class="form-control" id="firstName" placeholder="Pepa">
-                                    <div class="invalid-feedback" id="invalid-jmeno">
-                                        Zadejte prosím své jméno
-                                    </div>
-                                </div>
-                        </div>
-    
-                        <div class="row justify-content-center">
-                                <div class="col-md-8 mb-2">
-                                    <label for="lastName" class="form-label">Přijmení</label>
-                                    <input type="text" class="form-control" id="lastName" placeholder="Novák">
-                                    <div class="invalid-feedback" id="invalid-prijmeni">
-                                        Zadejte prosím své přijmení
-                                    </div>
-                                </div>
-                        </div>
-    
-                        <div class="row justify-content-center">
-                                <div class="form-group col-md-8 mb-2">
-                                    <label for="age" class="form-label">Věk</label>
-                                    <input type="number" class="form-control" id="age" placeholder="35">
-                                    <div class="invalid-feedback" id="invalid-age">
-                                        Zadejte prosím svůj věk
-                                    </div>
-                                </div>
-                        </div>
-    
-                        <div class="row justify-content-center">
-                                <div class="form-group col-md-8 mb-2">
-                                    <label for="phoneNumber" class="form-label">Telefon</label>
-                                    <input type="tel" class="form-control" id="phoneNumber" placeholder="111222333" aria-labelledby="phoneNumberHelpInLine">
-                                    <div id="phoneNumberHelpInLine" class="form-text">
-                                        9 místné číslo bez mezer
-                                    </div>
-                                    <div class="invalid-feedback" id="invalid-phoneNumber">
-                                        Zadejte prosím své telefoní číslo
-                                    </div>
-                                </div>
-                        </div>
-                            
-                            <div class="col-12 d-flex justify-content-center mt-5">
-                                <button id="odeslatBtn" class="btn btn-primary px-5" type="submit">Uložit</button>
-                        </div>
-                    </form>
-            </div>
-        
-        <!-- Modal
-        <div id="modal">
-
-        </div> -->
     
     <!-- Modal -->
     <div class="modal fade" id="modal-pop" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
