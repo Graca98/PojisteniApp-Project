@@ -1,17 +1,9 @@
-//!! Úkolníček
-//todo      1. Při smazání se celý řádek TR změní na červenou (Danger)
-//*         2. Při kliknutí na Edit tlačítko se přidá TD s tlačítky na smazání
-//*         3. Alerty se vytvaří pod sebe (vymyslet jak udelat jen jeden)
-//?         4. Po odeslání formuláře se obsah inputu smaže (stačí odkomentovat)
-//todo      5. Přidat paginace k tabulkám (stránky 1,2,3...)
-//todo
 
 class Pojistenec {
 
     constructor() {
         const pojistenciZeStorage = localStorage.getItem("uzivatele")
         this.pojistenci = pojistenciZeStorage ? JSON.parse(pojistenciZeStorage) : []
-        this.isValid = true // Pro validace forms
 
         this.jmeno = document.getElementById("firstName");
         this.prijmeni = document.getElementById("lastName");
@@ -19,19 +11,34 @@ class Pojistenec {
         this.telCislo = document.getElementById("phoneNumber");
         this.odeslatBtn = document.getElementById("odeslatBtn");
         this.editBtn = document.getElementById("editBtn");
+        this.openFormBtn = document.getElementById("openFormBtn")
+        this.formContainer = document.getElementById("mainFormDiv")
+        this.btnSearch = document.getElementById("btnSearch")
+
 
         this.pridejUzivatele()
+        this.openForm()
+    }
+
+    // Způsobí, že se strának přesune nahoru
+    scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
     }
 
     pridejUzivatele() {
         this.odeslatBtn.onclick = (e) => {
             e.preventDefault()
 
-            // Validace inputů
-            this.zvalidujForm()
-
             // Vytvoření uživatele z value formu a uložení do array a localstorage
-            if (this.isValid) {
+            if (this.formValidation(
+                this.jmeno,
+                this.prijmeni,
+                this.telCislo,
+                this.vek
+            )) {
 
                 // Přidá mezery mezi tel číslo
                 let number = this.telCislo.value
@@ -43,13 +50,24 @@ class Pojistenec {
 
                 this.ulozPojistence()
                 this.vypisPojistenceDoTabulky()
+                this.scrollToTop()
+                this.vytvorAlert(
+                    "alert alert-success",
+                    "Pojišteněc byl uložen"
+                )
+
+                // Smazání inputu po odeslání
+                this.jmeno.value = ""
+                this.prijmeni.value = ""
+                this.vek.value = ""
+                this.telCislo.value = ""
+
+                // Schová container formuláře
+                this.formContainer.classList.add("d-none")
+                // A přidá zpět zlatíčko "Nový pojištěnec"
+                this.openFormBtn.classList.remove("d-none")
             }
 
-            //* Smazání inputu po odeslání
-            // this.jmeno.value = ""
-            // this.prijmeni.value = ""
-            // this.vek.value = ""
-            // this.phoneNumber.value = ""
         }
 
     }
@@ -65,6 +83,8 @@ class Pojistenec {
         for (const pojistenec of this.pojistenci) {
             let novyRadek = document.createElement("tr");
             const vytvorTd = document.createElement("td");
+            const btnWrapper = document.createElement("div")
+            btnWrapper.classList = "d-flex justify-content-center"
             // Vytvoří div na button groupy
             const btnDiv = document.createElement("div")
             btnDiv.classList = "btn-group"
@@ -72,15 +92,16 @@ class Pojistenec {
             btnDiv.role = "group"
             btnDiv.ariaLabel = "Basic mixed styles example"
 
-            novyRadek.appendChild(this.vytvorBunku(pojistenec.name));
+            novyRadek.appendChild(this.vytvorBunku(`${pojistenec.firstName} ${pojistenec.lastName}`));
             novyRadek.appendChild(this.vytvorBunku(pojistenec.phoneNumber));
             novyRadek.appendChild(this.vytvorBunku(pojistenec.age));
 
             this._pridejTlacitkoDoTable("Smazat", () => {
+                novyRadek.classList.add("table-danger")
                 // Vyplní obsah modal popu a nastaví callback hlavního tlačítka
                 this._modalPop(
                     "Potvrzení",
-                    "Opravdu si přejete smazat uživatele?",
+                    "Opravdu si přejete smazat tohoto pojištěnce?",
                     "Zrušit",
                     "Smazat",
                     "btn btn-danger",
@@ -89,10 +110,14 @@ class Pojistenec {
                         this.ulozPojistence();
                         this.vypisPojistenceDoTabulky();
                         modal.hide();
+                        this.scrollToTop()
                         this.vytvorAlert(
                             "alert alert-success",
-                            "Uživatel byl smazán"
+                            "Pojištěnec byl smazán"
                         )
+                    },
+                    () => {
+                        novyRadek.classList.remove("table-danger")
                     }
                 )
                 // Zobrazí modal popup
@@ -107,7 +132,8 @@ class Pojistenec {
 
             tableBody.appendChild(novyRadek)
             novyRadek.appendChild(vytvorTd)
-            vytvorTd.appendChild(btnDiv)
+            btnWrapper.appendChild(btnDiv)
+            vytvorTd.appendChild(btnWrapper)
         }
 
     }
@@ -121,7 +147,7 @@ class Pojistenec {
         element.appendChild(button)
     }
 
-    _modalPop(title, text, btnCancelText, btnSaveText, btnSaveType, btnSaveCallback) {
+    _modalPop(title, text, btnCancelText, btnSaveText, btnSaveType, btnSaveCallback, btnCancelCallback) {
         const modalTitle = document.getElementById("modal-pop-title")
         const modalText = document.getElementById("modal-pop-text")
         const modalBtnCancel = document.getElementById("modal-pop-btn-cancel")
@@ -132,122 +158,126 @@ class Pojistenec {
         modalBtnCancel.textContent = btnCancelText
         modalBtnSave.textContent = btnSaveText
         modalBtnSave.classList = btnSaveType
+
         modalBtnSave.onclick = btnSaveCallback
+        modalBtnCancel.onclick = btnCancelCallback
     }
 
     vytvorBunku(text) {
         let td = document.createElement("td");
-        let tdInput = document.createElement("input");
+        td.textContent = text
 
-        tdInput.type = "text";
-        tdInput.value = text
-        tdInput.readOnly = true
-        tdInput.classList = "form-control-plaintext"
-
-        td.appendChild(tdInput)
         return td
     }
 
     editujBunku(radek) {
-        const bunky = radek.getElementsByTagName("td");
-        const pojistenec = this.pojistenci[radek.rowIndex - 1]
+        let editJmeno = document.getElementById("editFirstName")
+        let editPrijmeni = document.getElementById("editLastName")
+        let editTelCislo = document.getElementById("editPhoneNumber")
+        let editVek = document.getElementById("editAge")
 
-        //? Pokud se přídá více td (bunek) je potreba je tu označit číslem
-        //todo Pokusit se přijít na lepší způsob
-        for (let i = 0; i < bunky.length - 1; i++) { // Zvolí všechny td v TR krom posledího
-            const td = bunky[i];
-            const input = td.querySelector("input");
-            const inputName = bunky[0].querySelector("input")
-            const inputPhoneNumber = bunky[1].querySelector("input")
-            const inputAge = bunky[2].querySelector("input")
+        // const bunky = radek.getElementsByTagName("td");
+        const pojistenec = this.pojistenci[radek.rowIndex - 1];
 
-            input.readOnly = false;
-            input.classList.remove("form-control-plaintext");
-            
-            inputName.oninput = (e) => {
-                pojistenec[`${'name'}`] = "";
-                pojistenec[`${'name'}`] = e.target.value
+        // Retrieve the values from the selected row
+        const firstName = pojistenec.firstName;
+        const lastName = pojistenec.lastName;
+        const phoneNumber = pojistenec.phoneNumber.replace(/\s/g, '');
+        const age = pojistenec.age;
+
+        // Display the values in the edit form
+        editJmeno.value = firstName;
+        editPrijmeni.value = lastName;
+        editTelCislo.value = phoneNumber;
+        editVek.value = age;
+
+        // Show the edit form
+        const modal = new bootstrap.Modal(document.getElementById('modal-editForm'));
+        modal.show();
+
+        // Handle the save button click
+        const btnSave = document.getElementById("modal-editForm-btn-save");
+        btnSave.onclick = () => {
+
+            // Validation
+            if (this.formValidation(
+                editJmeno,
+                editPrijmeni,
+                editTelCislo,
+                editVek
+            )) {
+                // Přidá mezery mezi čísla
+                let number = editTelCislo.value
+                let phoneNumber = [number.slice(0, 3), " ", number.slice(3, 6), " ", number.slice(6, 9), " "].join("")
+
+                // Update the values in the pojistenec object
+                pojistenec.firstName = editJmeno.value;
+                pojistenec.lastName = editPrijmeni.value;
+                pojistenec.phoneNumber = phoneNumber;
+                pojistenec.age = editVek.value;
+
+                this.ulozPojistence();
+                this.vypisPojistenceDoTabulky();
+
+                // Hide the edit form
+                modal.hide();
             }
-            inputPhoneNumber.oninput = (e) => {
-                pojistenec[`${'phoneNumber'}`] = "";
-                pojistenec[`${'phoneNumber'}`] = e.target.value
-            }
-            inputAge.oninput = (e) => {
-                pojistenec[`${'age'}`] = "";
-                pojistenec[`${'age'}`] = e.target.value
-            }
-        }
-
-        //? Pokud přidám více td, je potřeba upravit toto číslo
-        const btnDiv = bunky[3].getElementsByTagName("div")[0]
-        btnDiv.innerHTML = ""
-        this._pridejTlacitkoDoTable("Zrušit", () => {
-            this.vypisPojistenceDoTabulky()
-        }, "btn btn-danger btn-sm", btnDiv)
-
-        this._pridejTlacitkoDoTable("Uložit", () => {
-            this.ulozPojistence();
-            this.vypisPojistenceDoTabulky();
-        }, "btn btn-success btn-sm", btnDiv)
-
+        };
     }
 
     ulozPojistence() {
         localStorage.setItem("uzivatele", JSON.stringify(this.pojistenci));
     }
 
-    zvalidujForm() {
-        this.isValid = true
-
-        // Validace jména
-        if (this.jmeno.value.trim().length <= 3 || this.jmeno.value.trim().length >= 12) {
-            this.vytvorInvalidAlert("Přílíš krátké/dlouhé jméno!", "firstName", "invalid-jmeno")
-            this.isValid = false
+    // ====== Validation ======
+    validationOfName(idInput) {
+        const regName = /^[a-zA-Z\u00C0-\u017F'´`]{2,16}$/;
+        if (!regName.test(idInput.value)) {
+            this.vytvorInvalidAlert("Přílíš krátké/dlouhé jméno!", idInput, "invalid-jmeno");
+            return false;
         } else {
-            let rmvInvalid = document.getElementById("firstName")
-            rmvInvalid.classList.remove("is-invalid")
-            rmvInvalid.classList.add("is-valid")
+            idInput.classList.remove("is-invalid");
+            idInput.classList.add("is-valid");
+            return true;
         }
+    }
 
-        // Validace přijmení
-        if (this.prijmeni.value.trim().length <= 3 || this.prijmeni.value.trim().length >= 12) {
-            this.vytvorInvalidAlert("Přílíš krátké/dlouhé přijmení!", "lastName", "invalid-prijmeni")
-            this.isValid = false
+    validationOfPhoneNumber(idInput) {
+        const regPhoneNumber = /^\d{9}$/;
+        if (!regPhoneNumber.test(idInput.value)) {
+            this.vytvorInvalidAlert("Zadejte platné telefonní číslo!", idInput, "invalid-phoneNumber");
+            return false;
         } else {
-            let rmvInvalid = document.getElementById("lastName")
-            rmvInvalid.classList.remove("is-invalid")
-            rmvInvalid.classList.add("is-valid")
+            idInput.classList.remove("is-invalid");
+            idInput.classList.add("is-valid");
+            return true;
         }
+    }
 
-        // Validace věku
-        if (this.vek.value.trim() < 1 || this.vek.value.trim() > 120) {
-            this.vytvorInvalidAlert("Zadejte svůj skutečný věk!", "age", "invalid-age")
-            this.isValid = false
+    validationOfAge(idInput) {
+        const regAge = /^(?:[1-9][0-9]?|1[01][0-9]|130)$/;
+        if (!regAge.test(idInput.value)) {
+            this.vytvorInvalidAlert("Zadejte svůj skutečný věk!", idInput, "invalid-age");
+            return false;
         } else {
-            let rmvInvalid = document.getElementById("age")
-            rmvInvalid.classList.remove("is-invalid")
-            rmvInvalid.classList.add("is-valid")
+            idInput.classList.remove("is-invalid");
+            idInput.classList.add("is-valid");
+            return true;
         }
+    }
 
-        // Validace tel čísla
-        if (this.telCislo.value.trim().length <= 8 || this.telCislo.value.trim().length >= 10) {
-            this.vytvorInvalidAlert("Zadejte platné telefonní číslo!", "phoneNumber", "invalid-phoneNumber")
-            this.isValid = false
-        } else {
-            let rmvInvalid = document.getElementById("phoneNumber")
-            rmvInvalid.classList.remove("is-invalid")
-            rmvInvalid.classList.add("is-valid")
-        }
+    formValidation(name, lastName, phoneNumber, age) {
+        const isValidName = this.validationOfName(name);
+        const isValidLastName = this.validationOfName(lastName);
+        const isValidPhoneNumber = this.validationOfPhoneNumber(phoneNumber);
+        const isValidAge = this.validationOfAge(age);
 
-        // Vrácení stavu validace
-        return this.isValid;
-
+        return isValidName && isValidLastName && isValidPhoneNumber && isValidAge;
     }
 
     // Funkce pro vytvoření červených invalid textů u inputů
     vytvorInvalidAlert(text, inputId, invalidDivId) {
-        let pridejInvalid = document.getElementById(inputId)
-        pridejInvalid.classList.add("is-invalid")
+        inputId.classList.add("is-invalid")
 
         let div = document.getElementById(invalidDivId)
         div.textContent = text
@@ -256,53 +286,42 @@ class Pojistenec {
     vytvorAlert(classList, text) {
         const div = document.createElement("div");
         const alertBox = document.getElementById("alertBox")
+        if (alertBox !== "") {
+            alertBox.innerHTML = ""
+        }
         div.classList = classList   // alert + alert-primary/danger/atd..
         div.role = "alert"
         div.textContent = text
 
-        // Volá se progressbar
-        this.progressBar(div)
+        // Create a div for progress bar animation
+        const progress = document.createElement("div");
+        progress.classList = "progress";
+        const progressValue = document.createElement("div");
+        progressValue.classList = "progress-value";
+        progress.appendChild(progressValue);
+        div.appendChild(progress);
 
-        alertBox.appendChild(div)
+        alertBox.appendChild(div);
+
+        // Když progress bar dojede na konec, smaže se
+        progressValue.addEventListener('animationend', () => {
+            const computedStyle = getComputedStyle(progressValue);
+            const width = computedStyle.getPropertyValue('width');
+
+            if (width === '0px') {
+                alertBox.innerHTML = ""
+            }
+        });
+
     }
 
-    progressBar(element) {
-        let divProgBar = document.createElement("div")
-        let divProggMain = document.createElement("div")
-
-
-        divProgBar.classList = "progress"
-        divProgBar.role = "progressbar"
-        divProgBar.ariaLabel = "Time bar"
-        divProgBar.ariaValueNow = "100"
-        divProgBar.ariaValueMin = "0"
-        divProgBar.ariaValueMax = "100"
-        divProgBar.style = "height: 5px;"
-        
-        divProggMain.id = "progBar"
-        divProggMain.classList = "progress-bar bg-success"
-        divProggMain.style = "width: 100%"
-        
-        let currentChunk = 0
-        let chunks = 5
-        
-        let timer = setInterval(update, 10)
-        
-        function update() {
-            currentChunk += 0.01
-            let progPercent = 100 - (currentChunk * (100 / chunks))
-            divProggMain.style = ("width:" + progPercent + "%")
-            divProgBar.ariaValueNow = progPercent
-            
-            if (progPercent <= 0) {
-                clearInterval(timer)
-                alertBox.innerHTML = ""              
-            }
-            console.log(currentChunk)
+    openForm() {
+        this.openFormBtn.onclick = () => {
+            // Odstraní display none z containeru formuláře
+            this.formContainer.classList.remove("d-none")
+            // A zároveň schová btn novýho pojištence
+            this.openFormBtn.classList.add("d-none")
         }
-        
-        divProgBar.appendChild(divProggMain)
-        element.appendChild(divProgBar)
     }
 
 }
