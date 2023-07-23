@@ -16,11 +16,10 @@
 <body class="d-flex flex-column min-vh-100">
     <!--!! Header -->
     <header>
-          <nav class="navbar bg-dark border-bottom border-bottom-dark navbar-expand-lg" data-bs-theme="dark">
-            <div class="container-fluid ms-3 me-3">
-                <h1 class="navbar-text" id="heading">
-                    Pojištění App
-                  </h1>
+          <nav class="navbar bg-dark border-bottom border-bottom-dark navbar-expand-lg py-4" data-bs-theme="dark">
+            <div class="container-fluid ms-sm-3 me-sm-3 align-middle">
+                <a href="index.html" id="headingAnchor"><h1 class="navbar-text" id="heading">InsureMate</h1></a>
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>  
@@ -29,14 +28,14 @@
                       <li class="nav-item p-2">
                         <a class="nav-link active p-2 px-3" aria-current="page" href="#">Pojištěnci</a>
                       </li>
+                      <!-- <li class="nav-item p-2">
+                        <a class="nav-link p-2 px-3 disabled" href="#">Pojištění</a>
+                      </li> -->
                       <li class="nav-item p-2">
                         <a class="nav-link p-2 px-3 disabled" href="#">Pojištění</a>
                       </li>
                       <li class="nav-item p-2">
-                        <a class="nav-link p-2 px-3 disabled" href="#">Události</a>
-                      </li>
-                      <li class="nav-item p-2">
-                        <a class="nav-link p-2 px-3 disabled">O aplikaci...</a>
+                        <a class="nav-link p-2 px-3" href="info.html">O aplikaci...</a>
                       </li>
                       <!-- <li class="nav-item p-2">
                         <button id="adminBtn">Uživatel</button>
@@ -46,20 +45,27 @@
             </div>
           </nav>
           
-          <div id="alertBox" class="mt-3"></div>
+          <div id="alertBox" class="mt-3">
+              <!-- <div class="obalovac">
+                  <div class="progress">
+                    <div class="progress-value"></div>
+                  </div>
+              </div> -->
+          </div>
+
 
     </header>
 
     <!--!! Main -->
     <main>
         <!-- Formulář -->
-        <div class="container p-3 mt-5 d-flex flex-column align-items-lg-center">
+        <div class="container p-3 mt-5 mb-4 d-flex flex-column align-items-md-center d-none" id="mainFormDiv">
             <div id="formAlert"></div>
-            <form class="col-md-6 mb-3 justify-content-center d-flex flex-column rounded pt-5 pb-3" id="form-ramecek" novalidate">
+            <form class="col-md-10 col-lg-8 col-xl-6 mb-3 justify-content-center d-flex flex-column rounded pt-5 pb-3" id="form-ramecek" novalidate">
                 <h3 class="pb-5 justify-content-center d-flex" id="new-user-heading">Nový Pojištěnec</h3>
 
                     <div class="row justify-content-center">
-                            <div class="col-md-8 mb-2">
+                            <div class="col-10 col-md-8 mb-2">
                                 <label for="firstName" class="form-label">Jméno</label>
                                 <input type="text" class="form-control" id="firstName" placeholder="Pepa">
                                 <div class="invalid-feedback" id="invalid-jmeno">
@@ -69,7 +75,7 @@
                     </div>
 
                     <div class="row justify-content-center">
-                            <div class="col-md-8 mb-2">
+                            <div class="col-10 col-md-8 mb-2">
                                 <label for="lastName" class="form-label">Přijmení</label>
                                 <input type="text" class="form-control" id="lastName" placeholder="Novák">
                                 <div class="invalid-feedback" id="invalid-prijmeni">
@@ -79,7 +85,7 @@
                     </div>
 
                     <div class="row justify-content-center">
-                            <div class="form-group col-md-8 mb-2">
+                            <div class="col-10 col-md-8 mb-2">
                                 <label for="age" class="form-label">Věk</label>
                                 <input type="number" class="form-control" id="age" placeholder="35">
                                 <div class="invalid-feedback" id="invalid-age">
@@ -89,7 +95,7 @@
                     </div>
 
                     <div class="row justify-content-center">
-                            <div class="form-group col-md-8 mb-2">
+                            <div class="col-10 col-md-8 mb-2">
                                 <label for="phoneNumber" class="form-label">Telefon</label>
                                 <input type="tel" class="form-control" id="phoneNumber" placeholder="111222333" aria-labelledby="phoneNumberHelpInLine">
                                 <div id="phoneNumberHelpInLine" class="form-text">
@@ -101,46 +107,54 @@
                             </div>
                     </div>
                         
-                        <div class="col-12 d-flex justify-content-center mt-5">
-                            <button id="odeslatBtn" class="btn btn-primary btn-lg px-5" type="submit">Uložit</button>
+                    <div class="d-flex justify-content-center">
+                        <div class="col-6 col-md-4 btn-group mt-5" role="group">
+                            <button id="cancelBtn" class="btn btn-secondary" type="submit">Zrušit</button>
+                            <button id="odeslatBtn" class="btn btn-primary" type="submit">Uložit</button>
+                        </div>
                     </div>
                 </form>
         </div>
     
         <!-- Tabulka pojištěnců -->
-        <div class="container p-3 mt-5">
+        <div class="container p-3 mt-3">
             <h2 class="mb-4" id="main-body-heading">Pojištěnci</h2>
-            <table class="uzivatele table border table-hover" id="tabulkaPojistencu">
-                <thead class="table-light">
-                    <tr>
-                        <th scope="col">Jméno a Přijmení</th>
-                        <th scope="col">Telefon</th>
-                        <th scope="col">Věk</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody class="align-middle" id="tabulka">
-                    <!-- <tr>
-                        <td>Pepa Novák</td>
-                        <td>776 353 572</td>
-                        <td>25</td>
-                    </tr>
-                    <tr>
-                        <td>Lucie Novotná</td>
-                        <td>774 553 672</td>
-                        <td>27</td>
-                    </tr> -->
-                </tbody>
-            </table>
+            <div class="col-12 d-flex justify-content-center mb-4">
+                <button id="openFormBtn" class="btn btn-primary btn-lg" type="submit">Nový pojištěnec</button>
+            </div>
+            <div class="table-responsive-md">
+                <table class="uzivatele table border table-hover" id="tabulkaPojistencu">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="col-lg-4">Jméno a Přijmení</th>
+                            <th scope="col" class="col-lg-3">Telefon</th>
+                            <th scope="col" class="col-lg-2">Věk</th>
+                            <th scope="col" class="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle" id="tabulka">
+                        <!-- <tr>
+                            <td>Pepa Novák</td>
+                            <td>776 353 572</td>
+                            <td>25</td>
+                        </tr>
+                        <tr>
+                            <td>Lucie Novotná</td>
+                            <td>774 553 672</td>
+                            <td>27</td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     
     <!-- Modal -->
-    <div class="modal fade" id="modal-pop" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal-pop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
             <h1 class="modal-title fs-5" id="modal-pop-title"></h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
             </div>
             <div class="modal-body">
                 <p id="modal-pop-text"></p>
@@ -152,12 +166,75 @@
         </div>
         </div>
     </div>
+
+    <!-- Modal form for edit -->
+    <div class="modal fade" id="modal-editForm" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modal-pop-title">Editace Pojištěnce</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="col-md-12 mb-3 justify-content-center d-flex flex-column rounded pt-3 pb-3" id="form-ramecekk" novalidate">
+    
+                        <div class="row justify-content-center">
+                                <div class="col-10 col-md-8 mb-2">
+                                    <label for="editFirstName" class="form-label">Jméno</label>
+                                    <input type="text" class="form-control" id="editFirstName">
+                                    <div class="invalid-feedback" id="invalid-jmeno">
+                                        Zadejte prosím své jméno
+                                    </div>
+                                </div>
+                        </div>
+    
+                        <div class="row justify-content-center">
+                                <div class="col-10 col-md-8 mb-2">
+                                    <label for="editLastName" class="form-label">Přijmení</label>
+                                    <input type="text" class="form-control" id="editLastName">
+                                    <div class="invalid-feedback" id="invalid-prijmeni">
+                                        Zadejte prosím své přijmení
+                                    </div>
+                                </div>
+                        </div>
+    
+                        <div class="row justify-content-center">
+                                <div class="form-group col-10 col-md-8 mb-2">
+                                    <label for="editAge" class="form-label">Věk</label>
+                                    <input type="number" class="form-control" id="editAge">
+                                    <div class="invalid-feedback" id="invalid-age">
+                                        Zadejte prosím svůj věk
+                                    </div>
+                                </div>
+                        </div>
+    
+                        <div class="row justify-content-center">
+                                <div class="form-group col-10 col-md-8 mb-2">
+                                    <label for="editPhoneNumber" class="form-label">Telefon</label>
+                                    <input type="tel" class="form-control" id="editPhoneNumber" aria-labelledby="phoneNumberHelpInLine">
+                                    <div id="phoneNumberHelpInLine" class="form-text">
+                                        9 místné číslo bez mezer
+                                    </div>
+                                    <div class="invalid-feedback" id="invalid-phoneNumber">
+                                        Zadejte prosím své telefoní číslo
+                                    </div>
+                                </div>
+                        </div>
+                    </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="modal-pop-btn-cancel" data-bs-dismiss="modal">Zrušit</button>
+            <button type="button" class="btn btn-success" id="modal-editForm-btn-save">Uložit</button>
+            </div>
+        </div>
+        </div>
+    </div>
    
     </main>
 
     <!--!! Footer -->
-    <footer class="mt-auto">
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit.</p>
+    <footer class="mt-auto" id="footer">
+        <p>© 2023 InsureMate.cz Všechna práva vyhrazena</p>
 
     </footer>
 
