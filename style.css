@@ -1,9 +1,19 @@
+/* body {
+    height: 100vh;
+} */
+
 #heading {
     color: white;
+    font-size: 3rem;
+    margin: 0;
+    padding: 0;
+    text-align: center;
 }
 
-.hide-button {
-    display: none
+#headingAnchor {
+    text-decoration: none;
+    text-align: center;
+
 }
 
 /* Shadow kolem rámečku */
@@ -11,26 +21,54 @@
     box-shadow: 5px 5px 10px lightgray;
 }
 
-/* ====== Progress Bar ====== */
+
+
+/* Animated progress bar */
 .progress {
-    position: absolute;
+    background: rgba(255, 255, 255, 0.1);
+    justify-content: flex-start;
+    border-radius: 100px;
+    align-items: center;
+    position: relative;
+    padding: 0;
+    display: flex;
+    height: 6px;
     width: 100%;
-    bottom: 0px;
-    left: 0px;
+    transition: none !important;
 }
 
-.progress-bar {
-    transition: none !important;
-  }
-/* === Progress Bar Konec === */
+.progress-value {
+    animation: load 5s normal forwards;
+    animation-direction: reverse;
+    box-shadow: 0 10px 40px -10px #fff;
+    border-radius: 100px;
+    background: #01ac0f;
+    height: 30px;
+    width: 0;
+}
 
+@keyframes load {
+    0% {
+        width: 0;
+    }
+    100% {
+        width: 100%;
+    }
+}
 
+/* Footer */
 footer {
-    height: 100px;
+    height: 80px;
 
     color: gray;
     background-color: #212529;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+
+/*. Info.html */
+.infoList li {
+    margin-bottom: 5px;
 }
